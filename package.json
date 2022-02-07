@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "@discordjs/builders": "^0.11.0",
+    "@discordjs/rest": "*",
+    "discord-api-types": "^0.26.1",
+    "discord.js": "^13.5.0",
+    "nodemon": "^2.0.15"
+  },
+  "name": "portsoc-bot",
+  "description": "Discord Management Bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "dev": "nodemon bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UP937100/PortSoC-Bot.git"
+  },
+  "author": "Jun Hui Chia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UP937100/PortSoC-Bot/issues"
+  },
+  "homepage": "https://github.com/UP937100/PortSoC-Bot#readme"
+}
