@@ -1,5 +1,10 @@
 const { Client,Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
+const { getName } = require('./messageCollector/name')
+const { getUP } = require('./messageCollector/up')
+const { getCourse } = require('./messageCollector/course')
+const { getYear } = require('./messageCollector/year')
+
 //File system to get commands
 const fs = require('fs');
 
@@ -25,19 +30,21 @@ client.once('ready', () => {
 
 client.on('guildMemberAdd', guildMember =>{
     console.log("member joined");
-    // const welcomeChannel = guildMember.guild.channels.cache.get('927585403899346944')
-    guildMember.send(`Welcome to, <@${guildMember.user.id}>, Portsmouth School of Computing Discord!\nI'll need your Name, UP number, Course and Current Year.`)
+	
+	guildMember.send(`Welcome to, <@${guildMember.user.id}>, Portsmouth School of Computing Discord!\nI'll need your Name, UP number, Course and Current Year to get you verified.`)
+	.then(async message => {
+		const filter = message => {
+			return message.author.bot !== true;
+		}
+		const name = await getName(filter, message);
+		const up = await getUP(filter, message);
+		const course = await getCourse(filter, message);
+		const year = await getYear(filter, message);
+		console.log(name, up, course, year);
+	})
 })
 
-client.on('messageCreate', message => {
-	if(message.author.bot) return
-	if(message.channel.type == 'DM'){
-		console.log(message.author.tag);
-		message.author.send('Thanks for replying!')
-		.catch(console.error)
-	}
-	console.log('Message received');
-})
+
 
 client.on('interactionCreate', async interaction => {
 	const command = await client.commands.get(interaction.commandName);
