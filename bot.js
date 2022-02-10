@@ -4,10 +4,10 @@ const { getName } = require('./messageCollector/name')
 const { getUP } = require('./messageCollector/up')
 const { getCourse } = require('./messageCollector/course')
 const { getYear } = require('./messageCollector/year')
+const { verifyUser } = require('./verifyUser')
 
 //File system to get commands
 const fs = require('fs');
-
 const client = new Client({ partials: ["CHANNEL"] , intents: [Intents.FLAGS.GUILDS, 'GUILD_MEMBERS','DIRECT_MESSAGES'] });
 
 // Command Handling
@@ -24,13 +24,13 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
 	console.log('Ready!');
 });
 
 client.on('guildMemberAdd', guildMember =>{
     console.log("member joined");
-	
+
 	guildMember.send(`Welcome to, <@${guildMember.user.id}>, Portsmouth School of Computing Discord!\nI'll need your Name, UP number, Course and Current Year to get you verified.`)
 	.then(async message => {
 		const filter = message => {
@@ -41,6 +41,9 @@ client.on('guildMemberAdd', guildMember =>{
 		const course = await getCourse(filter, message);
 		const year = await getYear(filter, message);
 		console.log(name, up, course, year);
+
+		const userCSVInfo = await verifyUser(up);
+		console.log(userCSVInfo)
 	})
 })
 
