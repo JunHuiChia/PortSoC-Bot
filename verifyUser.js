@@ -1,11 +1,13 @@
 const fs = require('fs');
 
 async function verifyUser(upNum){
+    let userVerified = false;
     const student = await readStudentCSV();
     if(student['up number'] == upNum){
         console.log('UP number Matched!');
+        userVerified = true;
     }
-    return student
+    return userVerified;
 }
 
 async function readStudentCSV(){
