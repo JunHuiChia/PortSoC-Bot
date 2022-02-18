@@ -1,11 +1,12 @@
 const { Client,Collection, Intents } = require('discord.js');
-const { token, L6NONSE, L6SOFTENG } = require('./config.json');
+const { token } = require('./config.json');
 
 const { getName } = require('./messageCollector/name')
 const { getUP } = require('./messageCollector/upNum')
 const { getCourse } = require('./messageCollector/course')
 const { getYear } = require('./messageCollector/year')
 const { verifyUser } = require('./verifyUser')
+const { verifiedMember } = require('./verifiedMember')
 
 //File system to get commands
 const fs = require('fs');
@@ -42,21 +43,16 @@ client.on('guildMemberAdd', guildMember =>{
 		const course = await getCourse(filter, message);
 		const year = await getYear(filter, message);
 		console.log(name, upNum, course, year);
+		guildMember.send(`
+			Name: ${name}
+			UP: ${upNum}
+			Course: ${course}
+			Year: ${year}
+		`)
 
+		// console.log(guildMember.user.username);
 		const userVerified = await verifyUser(upNum);
-		if(userVerified){
-			// Create new nickname for user 
-			const nameArray = name.split(" ")
-			const newFirstName = nameArray[0][0].toUpperCase() + nameArray[0].slice(1);
-			const newSurname = nameArray[1][0].toUpperCase();
-			const newNickname = `${newFirstName} ${newSurname} / up${upNum}`
-
-			guildMember.setNickname(newNickname)
-
-			//Add role to user based on what they study.
-			guildMember.roles.add([L6NONSE])
-			guildMember.send('You have been verified!')
-		}
+		verifiedMember(userVerified, guildMember, name, upNum)
 
 	})
 })
