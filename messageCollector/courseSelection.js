@@ -1,6 +1,5 @@
 const { MessageActionRow, MessageSelectMenu } = require("discord.js");
 
-
 async function courseSelection(guildMember){
     const row = new MessageActionRow()
     .addComponents(

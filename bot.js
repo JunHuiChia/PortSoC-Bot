@@ -1,13 +1,14 @@
 const { Client, Collection, Intents, MessageActionRow, MessageSelectMenu } = require("discord.js");
-const { token } = require("./config.json");
+const { token, guildId } = require("./config.json");
 
 const { getName } = require("./messageCollector/name");
 const { getUP } = require("./messageCollector/upNum");
 const { getCourse } = require("./messageCollector/course");
 const { getYear } = require("./messageCollector/year");
-const { verifyUser } = require("./verifyUser");
-const { verifiedMember } = require("./verifiedMember");
-const {courseSelection} = require("./courseSelection")
+const { verifyUser } = require("./verification/verifyUser");
+const { verifiedMember } = require("./verification/verifiedMember");
+const { roleAssign } = require("./verification/roleAssign");
+const {courseSelection} = require("./messageCollector/courseSelection")
 
 //File system to get commands
 const fs = require("fs");
@@ -69,10 +70,18 @@ client.on("guildMemberAdd", (guildMember) => {
 client.on("interactionCreate", async (interaction) => {
     const command = await client.commands.get(interaction.commandName);
     if (interaction.isSelectMenu()){
-        if(interaction.values[0] == 'computer science'){
-            interaction.reply('You chosen computer science')
-        } else if (interaction.values[0] == 'software engineering'){
-            interaction.reply('You chosen software engineering')
+        const server = client.guilds.fetch(guildId); 
+        const member = (await server).members.fetch(interaction.user.id)
+        const nickname = (await member).nickname
+        switch(interaction.values[0]){
+            case 'computer science':
+                await roleAssign(member, nickname, interaction.values[0])
+                interaction.reply('You chose computer science')
+                break;
+            case 'software engineering':
+                await roleAssign(member, nickname, interaction.values[0])
+                interaction.reply('You chose software engineering')
+                break;
         }
     }
     // if (!interaction.isCommand()) return;
