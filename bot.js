@@ -64,14 +64,12 @@ client.on("guildMemberAdd", (guildMember) => {
             const upNum = await getUP(filter, message);
 
             const userVerified = await verifyUser(name, upNum);
-            verifiedMember(
-                userVerified,
-                guildMember,
-                name,
-                upNum,
-            );
-
-            await getYear(guildMember);
+            if(userVerified){
+                await verifiedMember(guildMember, name, upNum);
+                await getYear(guildMember);
+            } else{
+                guildMember.send("Details given did not match.");
+            }
             console.log(name, upNum);
         });
 });
