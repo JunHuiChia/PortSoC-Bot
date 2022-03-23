@@ -3,18 +3,18 @@ const { token, guildId } = require("./config.json");
 
 const { getName } = require("./messageCollector/name");
 const { getUP } = require("./messageCollector/upNum");
-const { getCourse } = require("./messageCollector/course");
 const { getYear } = require("./messageCollector/year");
 const { verifyUser } = require("./verification/verifyUser");
+const { verifyYear } = require("./verification/verifyYear");
 const { verifiedMember } = require("./verification/verifiedMember");
-const { roleAssign } = require("./verification/roleAssign");
+const { roleManager } = require("./verification/roleManager");
 const {courseSelection} = require("./messageCollector/courseSelection")
 
 //File system to get commands
 const fs = require("fs");
 const client = new Client({
     partials: ["CHANNEL"],
-    intents: [Intents.FLAGS.GUILDS, "GUILD_MEMBERS", "DIRECT_MESSAGES","GUILD_MESSAGES"],
+    intents: [Intents.FLAGS.GUILDS, "GUILD_MEMBERS", "DIRECT_MESSAGES","GUILD_MESSAGES", "GUILDS"],
 });
 
 // Command Handling
@@ -42,9 +42,9 @@ client.on('messageCreate', async (msg) => {
         msg.reply("Updated")
         const server = client.guilds.fetch(guildId); 
         const member = (await server).members.fetch().then(
-            member => member.forEach((value, key) => {
-                if(value.user.bot == true) {return}
-                console.log(value.nickname);
+            member => member.forEach((user, key) => {
+                if(user.user.bot == true) {return}
+                roleManager(user, 'update', null, user.nickname)
             }))
     }
 })
@@ -62,31 +62,42 @@ client.on("guildMemberAdd", (guildMember) => {
             };
             const name = await getName(filter, message);
             const upNum = await getUP(filter, message);
-            // const course = await getCourse(filter, message);
-            const year = await getYear(filter, message);
-            
-            // console.log(guildMember.user.username);
-            const userVerified = await verifyUser(name, upNum, year);
+
+            const userVerified = await verifyUser(name, upNum);
             verifiedMember(
                 userVerified,
                 guildMember,
                 name,
                 upNum,
-                year
-                );
-            const course = await courseSelection(guildMember)
-            console.log(name, upNum, course, year);
+            );
+
+            await getYear(guildMember);
+            console.log(name, upNum);
         });
 });
 
 
 client.on("interactionCreate", async (interaction) => {
-    const command = await client.commands.get(interaction.commandName);
-    if (interaction.isSelectMenu()){
-        const server = client.guilds.fetch(guildId); 
-        const member = (await server).members.fetch(interaction.user.id)
-        const nickname = (await member).nickname
-        await roleAssign(member, nickname, interaction.values[0])
+    const server = client.guilds.fetch(guildId); 
+    const member = (await server).members.fetch(interaction.user.id)
+    const nickname = (await member).nickname
+    if(interaction.isSelectMenu()
+    && interaction.values[0] == 'first' 
+    || interaction.values[0] == 'second' 
+    || interaction.values[0] == 'final'
+    || interaction.values[0] == 'placement'){
+
+        const year = await verifyYear(nickname, interaction.values[0])
+        if(year){
+            await interaction.update({content: `You selected ${interaction.values[0]} year.`, components:[]});
+            await interaction.user.send('Your current year has been verified!')
+            await courseSelection(interaction.user)
+        } else{
+            await interaction.user.send('Your current year is incorrect! Please try again.')
+        }
+    }
+    else if (interaction.isSelectMenu()){
+        await roleManager(member, "assign", interaction.values[0], nickname)
         await interaction.update({content: `You selected ${interaction.values[0]}`, components: []});
     }
     // if (!interaction.isCommand()) return;

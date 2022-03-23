@@ -20,7 +20,7 @@ async function verifiedMember(
 
         guildMember.setNickname(newNickname);
 
-        guildMember.send("Your Name, UP number and Year has been verified!");
+        guildMember.send("Your Name and UP number has been verified!");
     } else {
         guildMember.send("Details given did not match.");
     }

@@ -1,13 +1,33 @@
+const { MessageActionRow, MessageSelectMenu } = require("discord.js");
 
-async function getYear(filter, message){
-    let year;
-    await message.channel.send(`What is your current year? 'first', 'second', 'placement', 'final'`).then( async () => {
-        await message.channel.awaitMessages({filter, max: 1, time: 60_000, errors: ['time'] }).then( response => {
-        message = response.first()
-        year = message.content;
-        })
-    })
-    return year;
+
+
+async function getYear(guildMember){
+    const row = new MessageActionRow()
+    .addComponents(
+        new MessageSelectMenu()
+            .setCustomId('select')
+            .setPlaceholder('Nothing selected')
+            .addOptions([
+                {
+                    label: 'First Year',
+                    value: 'first',
+                },
+                {
+                    label: 'Second Year',
+                    value: 'second',
+                },
+                {
+                    label: 'Final Year',
+                    value: 'final',
+                },
+                {
+                    label: 'Placement',
+                    value: 'placement',
+                },
+            ]),
+    );
+    guildMember.send({ content: 'What is your current year? ', components: [row] })
 }
 
 module.exports = { getYear }
