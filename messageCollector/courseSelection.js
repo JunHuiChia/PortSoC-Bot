@@ -8,12 +8,28 @@ async function courseSelection(guildMember){
             .setPlaceholder('Nothing selected')
             .addOptions([
                 {
+                    label: 'Computer Science',
+                    value: 'computer science',
+                },
+                {
                     label: 'Software Engineering',
                     value: 'software engineering',
                 },
                 {
-                    label: 'Computer Science',
-                    value: 'computer science',
+                    label: 'Computer Networks',
+                    value: 'computer networks',
+                },
+                {
+                    label: 'Computing',
+                    value: 'computing',
+                },
+                {
+                    label: 'Cyber Security and Forensic Computing',
+                    value: 'cyber security',
+                },
+                {
+                    label: 'Data Science and Analytics',
+                    value: 'data science',
                 },
             ]),
     );

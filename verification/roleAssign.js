@@ -1,5 +1,11 @@
 const {readStudentCSV} = require('./readStudentCSV')
-const { computerscience, softwareengineering} = require('../config.json')
+const { computerscience,
+        softwareengineering,
+        computernetworks,
+        computing,
+        cybersecurity,
+        datascience,
+    } = require('../config.json')
 
 async function roleAssign(member, nickname, course){
     const nameArray = nickname.split(" ");
@@ -15,6 +21,18 @@ async function roleAssign(member, nickname, course){
                 break;
             case 'software engineering':
                 ;(await member).roles.add([softwareengineering])
+                break;
+            case 'computer networks':
+                ;(await member).roles.add([computernetworks])
+                break;
+            case 'computing':
+                ;(await member).roles.add([computing])
+                break;
+            case 'cyber security':
+                ;(await member).roles.add([cybersecurity])
+                break;
+            case 'data science':
+                ;(await member).roles.add([datascience])
                 break;
         }
         (await member).send('Course has been verified!')

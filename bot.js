@@ -14,7 +14,7 @@ const {courseSelection} = require("./messageCollector/courseSelection")
 const fs = require("fs");
 const client = new Client({
     partials: ["CHANNEL"],
-    intents: [Intents.FLAGS.GUILDS, "GUILD_MEMBERS", "DIRECT_MESSAGES"],
+    intents: [Intents.FLAGS.GUILDS, "GUILD_MEMBERS", "DIRECT_MESSAGES","GUILD_MESSAGES"],
 });
 
 // Command Handling
@@ -36,6 +36,18 @@ for (const file of commandFiles) {
 client.once("ready", async () => {
     console.log("Ready!");
 });
+
+client.on('messageCreate', async (msg) => {
+    if(msg.content == "!u"){
+        msg.reply("Updated")
+        const server = client.guilds.fetch(guildId); 
+        const member = (await server).members.fetch().then(
+            member => member.forEach((value, key) => {
+                if(value.user.bot == true) {return}
+                console.log(value.nickname);
+            }))
+    }
+})
 
 client.on("guildMemberAdd", (guildMember) => {
     console.log("member joined");
@@ -67,22 +79,15 @@ client.on("guildMemberAdd", (guildMember) => {
         });
 });
 
+
 client.on("interactionCreate", async (interaction) => {
     const command = await client.commands.get(interaction.commandName);
     if (interaction.isSelectMenu()){
         const server = client.guilds.fetch(guildId); 
         const member = (await server).members.fetch(interaction.user.id)
         const nickname = (await member).nickname
-        switch(interaction.values[0]){
-            case 'computer science':
-                await roleAssign(member, nickname, interaction.values[0])
-                interaction.reply('You chose computer science')
-                break;
-            case 'software engineering':
-                await roleAssign(member, nickname, interaction.values[0])
-                interaction.reply('You chose software engineering')
-                break;
-        }
+        await roleAssign(member, nickname, interaction.values[0])
+        await interaction.update({content: `You selected ${interaction.values[0]}`, components: []});
     }
     // if (!interaction.isCommand()) return;
 
