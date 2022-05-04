@@ -1,0 +1,16 @@
+{
+    "token": "Bot Token here",
+    "clientId": "Bot ID here",
+    "guildId": "Server ID here",
+    "placement": "roleID",
+    "alumni": "roleID",
+    "computerScience": "roleID",
+    "softwareEngineering": "roleID",
+    "computerNetworks": "roleID",
+    "computing": "roleID",
+    "cyberSecurity": "roleID",
+    "dataScience": "roleID",
+    "firstYear": "roleID",
+    "secondYear": "roleID",
+    "finalYear": "roleID"
+}
